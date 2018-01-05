@@ -35,9 +35,14 @@ void MainWindow::on_pushButton_search_clicked()
 
   //  char buf[2000];
     searcher->search_device();
-    QString ip=searcher->wait_server_info_reply(2);
+ //   QThread::msleep(2000);
 
-    search_widget->add_text(ip);
+   QString ip=searcher->wait_server_info_reply(2);
+       QStringList l= searcher->search_rst();
+    foreach (QString str, l) {
+        search_widget->add_text(str);
+    }
+   // search_widget->add_text(ip);
 
 
 //    if(ip.length()){

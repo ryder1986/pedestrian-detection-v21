@@ -183,7 +183,7 @@ public slots:
     void get_ip(QString ip)
     {
           //  char buf[2000];
-      //   prt(info,"%s",str.toStdString().data());
+         prt(info,"connect %s",ip.toStdString().data());
          if(ip.length()){
              clt->connect_to_server(ip);
 

@@ -234,6 +234,7 @@ signals :
     int get_server_config(char *buf);
     void socket_error(ClientSession *c);
 //    int try_lock_server();
+    int session_request();
 private:
     char *rcv_buf;
     char send_buf[Pd::BUFFER_LENGTH];
@@ -254,6 +255,10 @@ private:
 class Server : public QObject
 {
     Q_OBJECT
+    enum SESSION_REQUEST{
+        TRY_TO_WRITE,
+        WRITE_DONE
+    };
 public:
     explicit Server(QObject *parent=0 ):QObject(parent){
         bool ret=false;
@@ -288,6 +293,18 @@ public slots:
         connect(skt,SIGNAL(error(QAbstractSocket::SocketError)),this,SLOT(displayError(QAbstractSocket::SocketError)));
         clients.append(client);
     }
+    void handle_request(int req)
+    {
+        switch(req){
+            case SESSION_REQUEST::TRY_TO_WRITE:
+            break;
+        case SESSION_REQUEST::WRITE_DONE:
+            break;
+        default:
+            break;
+        }
+    }
+
     void delete_client(ClientSession *c)
     {
         prt(info,"client %s disconnected",c->ip().toStdString().data());

@@ -18,7 +18,7 @@ public:
     {
         udp_skt_find_server=new QUdpSocket(this);
         udp_skt_find_server->bind(Protocol::CLIENT_REPORTER_PORT,QUdpSocket::ShareAddress);
-        connect(udp_skt_find_server,SIGNAL(readyRead()),this,SLOT(get_reply()));
+   //     connect(udp_skt_find_server,SIGNAL(readyRead()),this,SLOT(get_reply()),Qt::QueuedConnection);
     }
 
     void broadcast_info()
@@ -31,8 +31,16 @@ public:
     }
     void search_device()
     {
+        ip_list.clear();
         broadcast_info();
+     //   QThread::msleep(3000);
+
     }
+    QStringList search_rst()
+    {
+        return ip_list;
+    }
+
     QString wait_server_info_reply(int timeout_seconds)
     {
         int tick=0;
@@ -46,13 +54,18 @@ public:
                 return str;
             }
         }
-        //    if(udp_skt->hasPendingDatagrams())
-        {
+        int try_times=10;
+        while(try_times--){
+        if(udp_skt_find_server->hasPendingDatagrams()){
             datagram.resize((udp_skt_find_server->pendingDatagramSize()));
             udp_skt_find_server->readDatagram(datagram.data(),datagram.size());
             prt(info,"get server info : %s",datagram.data());
             server_ip.clear();
             server_ip.append(datagram.split(',')[0]);
+            prt(info,"ip : %s",server_ip.toStdString().data());
+            ip_list.append(server_ip);
+        }
+           QThread::msleep(100);
         }
         return server_ip;
     }
@@ -67,6 +80,7 @@ public slots:
             udp_skt_find_server->readDatagram(datagram.data(),datagram.size());
             prt(info,"get server info : %s",datagram.data());
             server_ip.append(datagram.split(',')[0]);
+            ip_list.append(server_ip);
         }
     }
 
@@ -75,7 +89,7 @@ private :
 
     QByteArray datagram;
     QString server_ip;
-
+    QStringList ip_list;
 };
 class ServerOutputRst: public QObject{
     Q_OBJECT
@@ -133,6 +147,7 @@ class Client : public QObject
 public:
     QString server_ip;
     Client(){
+        server_ip.clear();
         tcp_socket=new QTcpSocket();
         in.setDevice(tcp_socket);
         in.setVersion(QDataStream::Qt_1_0);
@@ -190,8 +205,19 @@ signals:
 public slots:
     void connect_to_server(QString ip)
     {
+        if(server_ip.size()){
+            tcp_socket->disconnectFromHost();
+            server_ip=ip;
+            tcp_socket->connectToHost(server_ip,Protocol::SERVER_PORT);
+            if(ip==server_ip){
+                  prt(info,"same ip reconnect");
+            }else{
+                  prt(info,"new ip connect");
+            }
+        }else{
         server_ip=ip;
         tcp_socket->connectToHost(server_ip,Protocol::SERVER_PORT);
+        }
         prt(info,"connecting to %s",server_ip.toStdString().data());
     }
     void  displayError(QAbstractSocket::SocketError socketError)
