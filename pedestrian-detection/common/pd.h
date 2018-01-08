@@ -46,7 +46,11 @@ public :
         DEL_CAMERA,
         MOD_CAMERA,
         CAM_OUTPUT_OPEN
+       };
+    enum MSG{
+        UPDATE
     };
+
     enum RET{
         RET_SUCCESS,
         RET_FAIL,
@@ -142,6 +146,15 @@ public :
         pkg_set_version(buf,VERSION);
         pkg_set_op(buf,CAM_OUTPUT_OPEN);
         pkg_set_ret(buf,index);
+        return HEAD_LENGTH;
+    }
+    static int encode_msg(char *buf,int op){
+        //   pkg_set_len(ba);
+        memset(buf,0,Pd::BUFFER_LENGTH);
+        pkg_set_len(buf,0);
+        pkg_set_version(buf,VERSION);
+        pkg_set_op(buf,op);
+        pkg_set_ret(buf,1);
         return HEAD_LENGTH;
     }
     static int encode_delcam_request(char *buf,int index){

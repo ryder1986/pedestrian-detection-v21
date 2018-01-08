@@ -14,11 +14,7 @@ class SearchWidget : public QWidget
 public:
     explicit SearchWidget(QWidget *parent = 0);
     ~SearchWidget();
-    void add_text(QString ip)
-    {
-        ui->tableWidget->setItem(num,0,new QTableWidgetItem(ip));
-        num++;
-    }
+
     void clear_text()
     {
          ui->tableWidget->clear();
@@ -27,7 +23,12 @@ public:
 //        for(i=0;i<10;i++)
 //        ui->tableWidget->removeRow(i);
     }
-
+public slots:
+    void add_text(QString ip)
+    {
+        ui->tableWidget->setItem(num,0,new QTableWidgetItem(ip));
+        num++;
+    }
 private slots:
     void on_tableWidget_doubleClicked(const QModelIndex &index);
 signals:

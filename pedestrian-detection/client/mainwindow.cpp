@@ -30,18 +30,30 @@ void MainWindow::on_pushButton_search_clicked()
     }
 
     search_widget->clear_text();
+ //   search_widget->setWindowState(Qt::WindowState);
+    int w=search_widget->width();
+    int h=search_widget->height();
+    int x=this->x();
+    int y=this->y();
+
+    search_widget->setGeometry((this->width()-w)/2+x,(this->height()-h)/2+y,w,h);
     search_widget->show();
 
-
+    connect(searcher,SIGNAL(find_ip(QString)),search_widget,SLOT(add_text(QString)));
   //  char buf[2000];
     searcher->search_device();
  //   QThread::msleep(2000);
+//    QMessageBox *b=new QMessageBox;
 
-   QString ip=searcher->wait_server_info_reply(2);
-       QStringList l= searcher->search_rst();
-    foreach (QString str, l) {
-        search_widget->add_text(str);
-    }
+//    b->setButtonText(0,"123");
+//    b->show();
+   // QThread::sleep(3);
+//    QString ip=searcher->wait_server_info_reply(2);
+//       QStringList l= searcher->search_rst();
+//    foreach (QString str, l) {
+//        search_widget->add_text(str);
+//    }
+  //  delete b;
    // search_widget->add_text(ip);
 
 
