@@ -5,14 +5,14 @@ MainWindow::MainWindow(QWidget *parent)
 {
     window=new Ui::Form;
     window->setupUi(this);
-    p_cfg=new CameraConfiguration("config.json-client");
+    p_cfg=new CameraConfiguration("config.json");
     searcher=new ServerInfoSearcher;
     rst_rcver=new ServerOutputRst ;
     clt=new Client;
     p_video_thread=NULL;
     search_widget=new SearchWidget;
     connect(search_widget,SIGNAL(select_ip(QString)),this,SLOT(get_ip(QString)));
-
+    connect(searcher,SIGNAL(find_ip(QString)),search_widget,SLOT(add_text(QString)));
 }
 
 MainWindow::~MainWindow()
@@ -37,9 +37,10 @@ void MainWindow::on_pushButton_search_clicked()
     int y=this->y();
 
     search_widget->setGeometry((this->width()-w)/2+x,(this->height()-h)/2+y,w,h);
+    search_widget->clear_text();
     search_widget->show();
 
-    connect(searcher,SIGNAL(find_ip(QString)),search_widget,SLOT(add_text(QString)));
+
   //  char buf[2000];
     searcher->search_device();
  //   QThread::msleep(2000);

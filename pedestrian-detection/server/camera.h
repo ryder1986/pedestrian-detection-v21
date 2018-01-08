@@ -119,8 +119,7 @@ public:
         XInitThreads();
 #endif
 #endif
-    //    p_cfg=new CameraConfiguration("config.json-server");
-    //    start_all();
+
     }
 #if 1
     static CameraManager &GetInstance()
@@ -138,7 +137,7 @@ private:
         XInitThreads();
 #endif
 #endif
-        p_cfg=new CameraConfiguration("config.json-server");
+        p_cfg=new CameraConfiguration("config.json");
         start_all();
     }
 

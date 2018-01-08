@@ -2,6 +2,7 @@
 #define SEARCHWIDGET_H
 
 #include <QWidget>
+#include <QDebug>
 #include "ui_searchwidget.h"
 namespace Ui {
 class SearchWidget;
@@ -26,6 +27,7 @@ public:
 public slots:
     void add_text(QString ip)
     {
+        qDebug()<<"adding "<<ip;
         ui->tableWidget->setItem(num,0,new QTableWidgetItem(ip));
         num++;
     }
